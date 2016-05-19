@@ -51,6 +51,11 @@ public class MyAdapter extends BaseAdapter {
         // TODO replace findViewById by ViewHolder
         ((TextView) result.findViewById(R.id.nameholder)).setText(item.getKey());
         ((TextView) result.findViewById(R.id.tellnumholder)).setText(item.getValue());
+        TextView name =(TextView)result.findViewById(R.id.nameholder);
+        name.setTextColor(parent.getContext().getResources().getColor(R.color.colorPrimary));
+        TextView textview =(TextView)result.findViewById(R.id.tellnumholder);
+        textview.setTextColor(parent.getContext().getResources().getColor(R.color.colorPrimary));
+
 
         return result;
     }

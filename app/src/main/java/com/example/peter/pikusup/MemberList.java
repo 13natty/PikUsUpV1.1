@@ -3,6 +3,7 @@ package com.example.peter.pikusup;
         import android.app.Activity;
         import android.content.DialogInterface;
         import android.content.Intent;
+        import android.graphics.Color;
         import android.os.AsyncTask;
         import android.os.Bundle;
         import android.support.v7.app.ActionBar;
@@ -38,6 +39,7 @@ public class MemberList extends ActionBarActivity {
     private HashMap<String, String> kids;
     private TaxiSendMessage sendMessage;
     private String TAG =  MemberList.class.getName();
+    private View clickedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class MemberList extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                clickedView = view;
                 TextView textview =(TextView)view.findViewById(R.id.tellnumholder);
                 String telnum = textview.getText().toString();
 
@@ -85,11 +88,20 @@ public class MemberList extends ActionBarActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         String [] message = {number,msg+"school"};
                         new HttpAsyncTask().execute(message);
+                        TextView name =(TextView)clickedView.findViewById(R.id.nameholder);
+                        name.setTextColor(Color.GRAY);
+                        TextView textview =(TextView)clickedView.findViewById(R.id.tellnumholder);
+                        textview.setTextColor(Color.GRAY);
                         dialog.cancel();
                     }
                 })
                 .setNegativeButton("Home", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        TextView name =(TextView)clickedView.findViewById(R.id.nameholder);
+                        name.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        TextView textview =(TextView)clickedView.findViewById(R.id.tellnumholder);
+                        textview.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        dialog.cancel();
                         String [] message = {number,msg+"Home"};
                         new HttpAsyncTask().execute(message);
                         dialog.cancel();
@@ -120,8 +132,12 @@ public class MemberList extends ActionBarActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String results) {
-            Toast.makeText(getBaseContext(), "Received!, results"+results, Toast.LENGTH_LONG).show();
-            Log.d(TAG, "Received!, results"+results);
+
+            if(results.equalsIgnoreCase("true")) {
+                Toast.makeText(getBaseContext(), "Message sent to Guardian", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(getBaseContext(), "Message not sent :(", Toast.LENGTH_LONG).show();
+            }
 //            if(results != null || !results.isEmpty()){
 //                //
 //            }else{
