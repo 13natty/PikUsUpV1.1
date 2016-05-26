@@ -3,6 +3,7 @@ package com.example.peter.pikusup;
         import android.app.Activity;
         import android.content.DialogInterface;
         import android.content.Intent;
+        import android.content.SharedPreferences;
         import android.graphics.Color;
         import android.os.AsyncTask;
         import android.os.Bundle;
@@ -40,6 +41,7 @@ public class MemberList extends ActionBarActivity {
     private TaxiSendMessage sendMessage;
     private String TAG =  MemberList.class.getName();
     private View clickedView;
+    private int backButtonCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,17 +83,22 @@ public class MemberList extends ActionBarActivity {
 
     public void showDialog(final String number, final String name) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final String msg = name+" Has been delivered to ";
+        final String msg = "Good Day, "+ name+" Has been dropped off at";
         builder.setMessage("Is the child delivered to")
                 .setCancelable(false)
                 .setPositiveButton("School", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        String [] message = {number,msg+"school"};
+                        String [] message = {number,msg+" school. Regards Idol Transport"};
                         new HttpAsyncTask().execute(message);
                         TextView name =(TextView)clickedView.findViewById(R.id.nameholder);
                         name.setTextColor(Color.GRAY);
                         TextView textview =(TextView)clickedView.findViewById(R.id.tellnumholder);
                         textview.setTextColor(Color.GRAY);
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                                "COLOR", getApplicationContext().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(textview.getText().toString(),"SCHOOL");
+                        editor.commit();
                         dialog.cancel();
                     }
                 })
@@ -101,14 +108,32 @@ public class MemberList extends ActionBarActivity {
                         name.setTextColor(getResources().getColor(R.color.colorPrimary));
                         TextView textview =(TextView)clickedView.findViewById(R.id.tellnumholder);
                         textview.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                                "COLOR", getApplicationContext().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(textview.getText().toString(),"HOME");
+                        editor.commit();
                         dialog.cancel();
-                        String [] message = {number,msg+"Home"};
+                        String [] message = {number,msg+" Home. Regards Idol Transport"};
                         new HttpAsyncTask().execute(message);
                         dialog.cancel();
                     }
                 });
         AlertDialog alert = builder.create();
+
         alert.show();
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                "COLOR", getApplicationContext().MODE_PRIVATE);
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+        alert.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(true);
+        if(sharedPref!=null){
+            String isHome = sharedPref.getString(number,"HOME");
+            if(isHome.equalsIgnoreCase("HOME")) {
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+            }else if (isHome.equalsIgnoreCase("SCHOOL")){
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+            }
+        }
     }
 
     @Override
@@ -185,5 +210,21 @@ public class MemberList extends ActionBarActivity {
             }
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backButtonCount >= 1)
+        {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
+            backButtonCount++;
+        }
     }
 }

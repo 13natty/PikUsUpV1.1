@@ -3,6 +3,8 @@ package com.example.peter.pikusup;
 /**
  * Created by Peter on 2016-05-12.
  */
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,13 +50,22 @@ public class MyAdapter extends BaseAdapter {
 
         Map.Entry<String, String> item = getItem(position);
 
-        // TODO replace findViewById by ViewHolder
+        SharedPreferences sharedPref = parent.getContext().getSharedPreferences(
+                "COLOR", parent.getContext().MODE_PRIVATE);
+
         ((TextView) result.findViewById(R.id.nameholder)).setText(item.getKey());
         ((TextView) result.findViewById(R.id.tellnumholder)).setText(item.getValue());
         TextView name =(TextView)result.findViewById(R.id.nameholder);
         name.setTextColor(parent.getContext().getResources().getColor(R.color.colorPrimary));
         TextView textview =(TextView)result.findViewById(R.id.tellnumholder);
         textview.setTextColor(parent.getContext().getResources().getColor(R.color.colorPrimary));
+        if(sharedPref!=null){
+            String isHome = sharedPref.getString(item.getValue(),"HOME");
+            if(!isHome.equalsIgnoreCase("HOME")) {
+                name.setTextColor(Color.GRAY);
+                textview.setTextColor(Color.GRAY);
+            }
+        }
 
 
         return result;
