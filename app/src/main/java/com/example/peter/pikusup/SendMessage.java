@@ -25,8 +25,8 @@ public class SendMessage {//SendMessage.sendSms(Student_Tell,Student_Name+"dropp
              * with a few exceptions for e.g. Greek characters.  For a full list,
              * see:  http://developer.bulksms.com/eapi/submission/character-encoding/
              */
-            data += "username=" + URLEncoder.encode("karaboh", "ISO-8859-1");
-            data += "&password=" + URLEncoder.encode("Makhi123", "ISO-8859-1");
+            data += "username=" + URLEncoder.encode("IdolCons", "ISO-8859-1");
+            data += "&password=" + URLEncoder.encode("idolsms123", "ISO-8859-1");
             data += "&message=" + URLEncoder.encode(message, "ISO-8859-1");
             data += "&want_report=1";
             data += "&msisdn=27"+Tel;

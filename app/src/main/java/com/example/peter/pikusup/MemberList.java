@@ -120,6 +120,13 @@ public class MemberList extends ActionBarActivity {
                     }
                 });
         AlertDialog alert = builder.create();
+        alert.setCanceledOnTouchOutside(true);
+        alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
 
         alert.show();
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
